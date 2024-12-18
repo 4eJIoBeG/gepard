@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  email     String    @unique
+  phone     String?   @unique
+  password  String?
+  name      String    @default("Не указано")
+  picture   String    @default("/uploads/no-user-image.png")
+  orders    Order[]
+  reviews   Review[]
+  Vehicle   Vehicle[]
+
+  @@map("user")
+}
+
+model Vehicle {
+  id          String      @id @default(cuid())
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  title       String
+  description String
+  price       Int
+  images      String[]
+  userId      String?     @map("user_id")
+  categoryId  String?     @map("category_id")
+  orderItems  OrderItem[]
+  category    Category?   @relation(fields: [categoryId], references: [id])
+  user        User?       @relation(fields: [userId], references: [id])
+  reviews     Review[]
+
+  @@map("vehicle")
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  title       String
+  description String
+  vehicles    Vehicle[]
+
+  @@map("category")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  text      String
+  rating    Int
+  userId    String?  @map("user_id")
+  vehicleId String?  @map("vehicle_id")
+  vehicle   Vehicle? @relation(fields: [vehicleId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@map("review")
+}
+
+model Order {
+  id        String          @id @default(cuid())
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
+  status    EnumOrderStatus @default(PENDING)
+  userId    String?         @map("user_id")
+  user      User?           @relation(fields: [userId], references: [id])
+  items     OrderItem[]
+
+  @@map("order")
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  price     Int
+  orderId   String?  @map("order_id")
+  vehicleId String?  @map("vehicle_id")
+  order     Order?   @relation(fields: [orderId], references: [id])
+  vehicle   Vehicle? @relation(fields: [vehicleId], references: [id])
+
+  @@map("order_item")
+}
+
+enum EnumOrderStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
