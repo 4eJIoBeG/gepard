@@ -28,7 +28,9 @@ export class VehicleService {
 						title: {
 							contains: searchTerm,
 							mode: 'insensitive'
-						},
+						}
+					},
+					{
 						description: {
 							contains: searchTerm,
 							mode: 'insensitive'
