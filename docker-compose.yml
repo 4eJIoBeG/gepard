@@ -1,9 +1,0 @@
-version: '3'
-
-services:
-    backend-api:
-        build:
-        container_name: backend-api
-        restart: always
-        network_mode: host
-        command: 'npm run start:prod'
