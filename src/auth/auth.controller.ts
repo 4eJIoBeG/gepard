@@ -15,6 +15,7 @@ import { AuthService } from './auth.service'
 import { AuthDto } from './dto/auth.dto'
 import { Request, Response } from 'express'
 import { AuthGuard } from '@nestjs/passport'
+import { ApiBearerAuth, ApiBody } from '@nestjs/swagger'
 
 @Controller('auth')
 export class AuthController {
@@ -36,6 +37,18 @@ export class AuthController {
 
 	@UsePipes(new ValidationPipe())
 	@HttpCode(200)
+	@ApiBody({
+		description: 'Обновление статуса заявки',
+		schema: {
+			type: 'object',
+			example: {
+				name: 'Бобр',
+				email: 'test1@test.ru',
+				phone: '+79591234567',
+				password: 'test123'
+			}
+		}
+	})
 	@Post('register')
 	async register(
 		@Body() dto: AuthDto,
@@ -73,6 +86,7 @@ export class AuthController {
 	}
 
 	@HttpCode(200)
+	@ApiBearerAuth()
 	@Post('logout')
 	async logout(@Res({ passthrough: true }) res: Response) {
 		this.authService.removeRefreshTokenFromResponse(res)

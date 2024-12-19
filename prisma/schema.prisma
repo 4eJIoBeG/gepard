@@ -14,6 +14,7 @@ model User {
   email     String    @unique
   phone     String?   @unique
   password  String?
+	role    EnumUserRole @default(USER)
   name      String    @default("Не указано")
   picture   String    @default("/uploads/no-user-image.png")
   orders    Order[]
@@ -95,4 +96,10 @@ enum EnumOrderStatus {
   PENDING
   PAID
   CANCELLED
+}
+
+enum EnumUserRole {
+  ADMIN
+  OPERATOR
+  USER
 }
