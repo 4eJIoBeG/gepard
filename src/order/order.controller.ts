@@ -15,20 +15,44 @@ import { CurrentUser } from 'src/user/decorators/user.decorator'
 import { OrderDto } from './dto/order.dto'
 import { ApiBearerAuth, ApiBody } from '@nestjs/swagger'
 import { EnumOrderStatus } from '@prisma/client'
+import { HelpDto } from './dto/help.dto'
+import { TelegramService } from './telegram.service'
 
 @Controller('orders')
-@ApiBearerAuth()
 export class OrderController {
-	constructor(private readonly orderService: OrderService) {}
+	constructor(
+		private readonly orderService: OrderService,
+		private readonly telegramService: TelegramService
+	) {}
 
 	@UsePipes(new ValidationPipe())
 	@HttpCode(200)
 	@Auth()
+	@ApiBearerAuth()
 	@Post('checkout')
 	async checkout(@Body() dto: OrderDto, @CurrentUser('id') userId: string) {
 		return this.orderService.createPayment(dto, userId)
 	}
 
+	@UsePipes(new ValidationPipe())
+	@HttpCode(200)
+	@ApiBody({
+		description: 'Отправка заявки на быструю помощь',
+		schema: {
+			type: 'object',
+			example: {
+				name: 'Петров Сергей Бобрович',
+				email: 'psb@test.ru',
+				phone: '+79590000000'
+			}
+		}
+	})
+	@Post('help')
+	async helpRequest(@Body() dto: HelpDto, status: string = 'PENDING') {
+		return this.telegramService.createHelpRequest(dto, status)
+	}
+
+	@ApiBearerAuth()
 	@Patch(':id')
 	@ApiBody({
 		description: 'Обновление статуса заявки',
@@ -54,6 +78,7 @@ export class OrderController {
 		return updatedOrder
 	}
 
+	@ApiBearerAuth()
 	@Delete(':id')
 	async deleteOrder(@Param('id') orderId: string) {
 		return await this.orderService.deleteOrder(orderId)

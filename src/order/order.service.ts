@@ -30,6 +30,8 @@ export class OrderService {
 			}
 		})
 
+		console.log(order)
+
 		return {
 			...order
 		}
