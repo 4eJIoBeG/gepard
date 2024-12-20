@@ -6,7 +6,6 @@ export class HelpDto {
 	})
 	name: string
 
-	@IsOptional()
 	@IsString({
 		message: 'Номер обязательный'
 	})
@@ -15,6 +14,7 @@ export class HelpDto {
 	})
 	phone: string
 
+	@IsOptional()
 	@IsString({
 		message: 'Введите имя'
 	})

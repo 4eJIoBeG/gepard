@@ -15,18 +15,16 @@ export class TelegramService {
 
 	async createHelpRequest(dto: HelpDto) {
 		try {
-			await this.bot.sendMessage(
-				this.managerChatId,
-				`
+			const message = `
 				Новая заявка:
 				Имя: ${dto.name}
 				Телефон: ${dto.phone}
-				Комментарий: ${dto.comment}
-			`,
-				{
-					parse_mode: 'HTML'
-				}
-			)
+				${dto.comment ? 'Комментарий: ' + dto.comment : ''}
+			`
+
+			await this.bot.sendMessage(this.managerChatId, message, {
+				parse_mode: 'HTML'
+			})
 		} catch (error) {
 			console.error('Ошибка отправки сообщения:', error)
 		}
