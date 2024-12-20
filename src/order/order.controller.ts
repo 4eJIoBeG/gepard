@@ -42,14 +42,14 @@ export class OrderController {
 			type: 'object',
 			example: {
 				name: 'Петров Сергей Бобрович',
-				email: 'psb@test.ru',
-				phone: '+79590000000'
+				phone: '+79590000000',
+				comment: 'Спасите помогите на улице Боброва'
 			}
 		}
 	})
 	@Post('help')
-	async helpRequest(@Body() dto: HelpDto, status: string = 'PENDING') {
-		return this.telegramService.createHelpRequest(dto, status)
+	async helpRequest(@Body() dto: HelpDto) {
+		return this.telegramService.createHelpRequest(dto)
 	}
 
 	@ApiBearerAuth()

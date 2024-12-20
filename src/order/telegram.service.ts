@@ -13,16 +13,15 @@ export class TelegramService {
 		})
 	}
 
-	async createHelpRequest(dto: HelpDto, status: string = 'PENDING') {
+	async createHelpRequest(dto: HelpDto) {
 		try {
 			await this.bot.sendMessage(
 				this.managerChatId,
 				`
 				Новая заявка:
 				Имя: ${dto.name}
-				Email: ${dto.email}
 				Телефон: ${dto.phone}
-				Статус: ${status}
+				Комментарий: ${dto.comment}
 			`,
 				{
 					parse_mode: 'HTML'
